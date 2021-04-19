@@ -1,0 +1,38 @@
+version: "1.0.0"
+info:
+  model: tenant-manifest
+  tenant: "Y"
+  name: "default_production"
+  type: "prod"
+  scaffold: "Receive Invoice"
+  tags:
+  - demo
+  - coucou
+packages: # generated packages representing services referenced from a workflow 
+  - package:
+    name: "WmJDBCAdapter"
+    version: 10.3
+  - package:
+    name: "WmFlatFile"
+    version: 10.5
+  - package:
+    name: "JcPurchasing"
+    version: 2.0.0
+  - package: 
+    name: "JcDocTypes:
+    version: 2.0.0
+  - package:
+    name: "JcTools"
+    version: 1.0.1
+config:
+  - library: 
+    repo: "mygit"
+    source: "./resources/mysql-connector-java-5.1.47.jar"
+    target: "/opt/softwareag/IntegrationServer/lib/jars"
+  - user:
+    username: "Purchasing001"
+    password: "{AES}Y5IgMqPRODPRODp5VUZztw=="
+  - artConnection:
+    alias: JcPurchasing.jc.api.purchasing_.services.priv.jdbc.conn
+    serverName: "mysqldb"
+    password: "{AES}Y5IgMPRODPRODp5VUZztw=="

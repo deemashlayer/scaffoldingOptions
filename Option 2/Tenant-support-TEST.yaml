@@ -1,0 +1,31 @@
+version: "1.0.0"
+info:
+  model: tenant-manifest
+  tenant: "Y"
+  name: "TestAgent"
+  type: "test"
+  scaffold: "Receive Invoice"
+  tags:
+  - demo
+  - coucou
+packages: # generated packages representing services referenced from a workflow 
+  - package:
+    name: "WmJDBCAdapter"
+    version: 10.3
+  - package:
+    name: "JcSupport"
+    version: 2.0.0
+  - package: 
+    name: "JcDocTypes:
+    version: 2.0.0
+  - package:
+    name: "JcTools"
+    version: 1.0.1
+config:
+  - user:
+    username: "Support001"
+    password: "$env{SUPPORT_USER_PSW}"
+  - artConnection:
+    alias: JcPurchasing.jc.api.support_.services.priv.jdbc.conn
+    serverName: "$env{SUPPORT_DB_SERVERNAME}"
+    password: "$env{SUPPORT_DB_PSW}"

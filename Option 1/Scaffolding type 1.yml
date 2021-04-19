@@ -1,0 +1,76 @@
+version: "1.0.0"
+info:
+  name: "Receive Invoice" # same name wm.io project
+  model: int-scaffold
+  type: "project" # webMethods wm.io project
+  description: "example scaffolding for Integration"
+  version: "1.0" # branch version to pulled from repo
+  wmVersion: "10.11" # webMethods version to be pulled from sag wpm repo
+  tags:
+  - demo
+  - coucou
+resources: # Identify source code repositories
+  - repo: "mygit"
+    - https://github.com/johnpcarter/wm.git
+  - repo: "commons"
+    - https://github.com/johnpcarter/commons.git
+services:
+  - service:
+    name: "receiveInvoice"
+    tenant: "sag:default" # cloud hosted tenant alias
+    packages:
+      - repo: "wpm:sag" # sag official repo - will fetch 10.11
+        - WmFlatFile
+      - repo: "wpm:other" # wild west public repo
+        - JcAPITools
+      - repo: "git:mygit" # git source repository defined by mygit
+        - JcInvoicing
+        - JcDocTypes
+      - repo: "git:commons"
+        - JcTools
+      properties:
+        - property: "https.port.JcInvoicing" # this cannot be done today, need a feature request for MSR
+          default: "3030"
+          secret: false # if true, assume default is encrypted and if modifiable can be set via k8s secret
+          modifiable: false # if true, will possible to override by environment variable. 
+  - service:
+    name: "submitInvoiceToPurchasing"
+    tenant: "private:default" # on premise hosted tenant alias
+    packages:
+      - repo: "wpm:sag" 
+        - WmJCDBAdapter
+        - WmFlatFile
+      - repo: "git:mygit"
+        - JcPurchasing
+        - JcDocTypes
+      - repo: "git:commons"
+        - JcTools
+    config:
+      - library:
+          source: "./resources/mysql-connector-java-5.1.47.jar"
+          target: "/opt/softwareag/IntegrationServer/lib/jars"
+      - user:
+          username: "Purchasing001"
+          password: "{AES}Y5IgMqjfvkgbg7p5VUZztw=="
+      - artConnection:
+          alias: JcPurchasing.jc.api.purchasing_.services.priv.jdbc.conn
+          serverName: "mysqldb"
+          password: "{AES}Y5IgMqjfvkgbg7p5VUZztw=="
+  - service:
+    name: "sendInvoiceToSupport"
+    tenant: "private:support" # on premise hosted tenant alias
+    packages:
+      - repo: "wpm:sag" 
+        - WmJCDBAdapter
+      - repo: "git:mygit"
+        - JcSupport
+      - repo: "git:commons"
+        - JcTools
+    config:
+      - user:
+        username: "Support001"
+        password: "{AES}Y5IgMqjfvkgbg7p5VUZztw=="
+      - artConnection:
+        alias: JcPurchasing.jc.api.support_.services.priv.jdbc.conn
+        serverName: "mysqldb"
+        password: "{AES}Y5IgMqjfvkgbg7p5VUZztw=="
